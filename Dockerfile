@@ -13,32 +13,37 @@ RUN rm -rf /var/lib/apt/lists/*
 #     ln -s /root/proj/dots/bash/.bashrc /root/.bashrc
 
 # Set the user as the active user
-ARG USERNAME=shantanu
-RUN useradd -ms /bin/bash $USERNAME
-USER $USERNAME
+ARG USER_NAME=shantanu
+RUN useradd -ms /bin/bash $USER_NAME
 
 # Set the home dir
-ARG HOME_DIR="/home/${USERNAME}"
-ARG PROJ_DIR="/home/${USERNAME}/proj"
+ARG HOME_DIR="/home/${USER_NAME}"
+ARG PROJ_DIR="/home/${USER_NAME}/proj"
 
 # Set the working directory within the container
 WORKDIR $HOME_DIR
 
 # Create directory for projects
 RUN mkdir -p $PROJ_DIR
-RUN mkdir -p $PROJ_DIR/.ssh
+RUN mkdir -p $HOME_DIR/.ssh
 
 # Set up SSH key for Git access
-COPY .ssh/github $HOME_DIR/.ssh/github
+COPY "./github" $HOME_DIR/.ssh/
+RUN chown -R $USER_NAME:$USER_NAME $HOME_DIR
+RUN chmod 700 $HOME_DIR/.ssh
 RUN chmod 600 $HOME_DIR/.ssh/github
 
-# Clone dotfiles repository into /root/proj/dots
-RUN git clone https://github.com/8hantanu/dots.git "${PROJ_DIR}/dots"
+USER $USER_NAME
+
+# Clone git repositories
+RUN eval "$(ssh-agent -s)" && \
+    ssh-add $HOME_DIR/.ssh/github && \
+    git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" && \
+    git clone git@github.com:8hantanu/dots.git "${PROJ_DIR}/dots" && \
+    eval "$(ssh-agent -k)"
 
 # Set the bash prompt to reflect the username and machine name
-# RUN echo "export PS1='\u@cloud:\w\$ '" >> ~/.bashrc
+RUN echo "export PS1='\u:\w\$ '" >> ~/.bashrc
 
 # Set the entrypoint command to launch Bash
 CMD ["/bin/bash"]
-
-
