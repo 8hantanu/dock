@@ -1,3 +1,4 @@
+
 # Use an official Ubuntu latest image as the base
 FROM ubuntu:latest
 
@@ -14,7 +15,7 @@ RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
 # Set the user as the active user
-ARG USER_NAME=shantanu
+ARG USER_NAME=user
 RUN useradd -ms /bin/bash $USER_NAME
 
 # Set the home dir
@@ -31,7 +32,7 @@ RUN mkdir -p $HOME_DIR/.config/nvim
 RUN mkdir -p $HOME_DIR/.local/share/nvim/site/autoload
 
 # Set up SSH key for Git access
-COPY "./github" $HOME_DIR/.ssh/
+ADD ".ssh/github" $HOME_DIR/.ssh/
 RUN chown -R $USER_NAME:$USER_NAME $HOME_DIR
 RUN chmod 700 $HOME_DIR/.ssh
 RUN chmod 600 $HOME_DIR/.ssh/github
@@ -50,15 +51,19 @@ USER $USER_NAME
 RUN eval "$(ssh-agent -s)" && \
     ssh-add $HOME_DIR/.ssh/github && \
     git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" && \
-    git clone git@github.com:8hantanu/dots.git "${PROJ_DIR}/dots"
+    git clone git@github.com:8hantanu/dots.git "${HOME_DIR}/dots"
 
 # Set up configurations
-RUN ln -s $PROJ_DIR/dots/.vimrc $HOME_DIR/.vimrc
-RUN ln -s $PROJ_DIR/dots/.tmux.conf $HOME_DIR/.tmux.conf
-RUN ln -s $PROJ_DIR/dots/.nvimrc $HOME_DIR/.config/nvim/init.vim
+RUN ln -s $HOME_DIR/dots/.vimrc $HOME_DIR/.vimrc
+RUN ln -s $HOME_DIR/dots/.tmux.conf $HOME_DIR/.tmux.conf
+RUN ln -s $HOME_DIR/dots/.nvimrc $HOME_DIR/.config/nvim/init.vim
+
+# Set git author
+RUN git config --global user.name "Shantanu Mishra"
+RUN git config --global user.email "dev@8hantanu.net"
 
 # Set the bash prompt to reflect the username and machine name
-RUN echo "export PS1='\u:\w\$ '" >> $HOME_DIR/.bashrc
+RUN echo "export PS1='\u@dock:\w\$ '" >> $HOME_DIR/.bashrc
 
 RUN echo 'if [ -z "$SSH_AUTH_SOCK" ] ; then' >> $HOME_DIR/.bashrc && \
     echo '    eval "$(ssh-agent -s)"' >> $HOME_DIR/.bashrc && \
