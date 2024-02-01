@@ -1,14 +1,22 @@
 # dock
-A docker image collection
+**Instant developer environment setup**
 
-# build
+## build
 
 ```
 docker build -t dock_img .
 ```
 
-# run
+## run
 
 ```
-docker run -it --name dock_inst -v $PROJ_PATH:/home/user/proj dock_img
+docker run -it --name dock -v $PROJ_PATH:/home/user/proj dock_img
 ```
+
+## attach
+
+```
+docker attach dock
+```
+
+**Note**: Use sudo when needed.
