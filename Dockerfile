@@ -37,6 +37,12 @@ RUN chown -R $USER_NAME:$USER_NAME $HOME_DIR
 RUN chmod 700 $HOME_DIR/.ssh
 RUN chmod 600 $HOME_DIR/.ssh/github
 
+# Get rust-analyzer
+RUN curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux -o /usr/local/bin/rust-analyzer && chmod +x /usr/local/bin/rust-analyzer
+
+# Get chatgpt-cli
+RUN curl -L https://github.com/kardolus/chatgpt-cli/releases/latest/download/chatgpt-linux-amd64 -o /usr/local/bin/hey && chmod +x /usr/local/bin/hey
+
 # Clone Neovim repository and build
 RUN git clone --branch v0.9.0 --depth 1 https://github.com/neovim/neovim.git /tmp/nvim && \
     cd /tmp/nvim && \
