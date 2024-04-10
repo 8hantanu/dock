@@ -57,9 +57,11 @@ USER $USER_NAME
 RUN eval "$(ssh-agent -s)" && \
     ssh-add $HOME_DIR/.ssh/github && \
     git config --global core.sshCommand "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" && \
+    git clone git@github.com:8hantanu/shhh.git "${HOME_DIR}/shhh" && \
     git clone git@github.com:8hantanu/dots.git "${HOME_DIR}/dots"
 
 # Set up configurations
+RUN ln -s $HOME_DIR/shhh/.env $HOME_DIR/.env
 RUN ln -s $HOME_DIR/dots/.vimrc $HOME_DIR/.vimrc
 RUN ln -s $HOME_DIR/dots/.tmux.conf $HOME_DIR/.tmux.conf
 RUN ln -s $HOME_DIR/dots/.nvimrc $HOME_DIR/.config/nvim/init.vim
