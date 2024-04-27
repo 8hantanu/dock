@@ -1,0 +1,10 @@
+title: dock
+author: Shantanu Mishra
+email: dev@8hantanu.net
+description: >
+  Instant developer environment setup
+
+url: https://8hantanu.net
+baseurl: /dock
+
+remote_theme: yree/mold
