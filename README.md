@@ -1,22 +1,21 @@
-# dock
+# dock ⚓
+
 **Instant developer environment setup**
 
-## build
+## build 🏗️
 
 ```
-docker build -t dock_img .
+sudo docker build -t dock_img .
 ```
 
-## run
+## run 🚀
 
 ```
-docker run -it --name dock -v $PROJ_PATH:/home/user/proj dock_img
+sudo docker run -it --name dock -v $PROJ_PATH:/home/user/proj dock_img
 ```
 
-## attach
+## attach 🔗
 
 ```
-docker attach dock
+sudo docker attach dock
 ```
-
-**Note**: Use sudo when needed.
